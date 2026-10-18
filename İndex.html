@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AwasBey Windows Desktop OS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0f172a;
+        }
+
+        .desktop {
+            width: 100vw;
+            height: calc(100vh - 48px);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            position: relative;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-rows: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 15px;
+            align-content: start;
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.12);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+
+        .icon {
+            width: 80px;
+            height: 85px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .icon:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .icon i {
+            font-size: 32px;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
+
+        .icon span {
+            font-size: 11px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .window {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90vw;
+            max-width: 600px;
+            height: 60vh;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            display: none;
+            flex-direction: column;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .window-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-controls i {
+            cursor: pointer;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .window-body {
+            flex: 1;
+            padding: 16px;
+            color: #f8fafc;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .taskbar {
+            width: 100vw;
+            height: 48px;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            backdrop-filter: blur(10px);
+            z-index: 200;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .taskbar-clock {
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-card {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desktop">
+        <div class="watermark">By: AwasBey</div>
+
+        <div class="icon" onclick="openWindow('pcWindow')">
+            <i class="fa-solid fa-desktop" style="color: #38bdf8;"></i>
+            <span>Bilgisayarım</span>
+        </div>
+
+        <div class="icon" onclick="openWindow('notesWindow')">
+            <i class="fa-solid fa-file-lines" style="color: #4ade80;"></i>
+            <span>Not Defteri</span>
+        </div>
+    </div>
+
+    <div id="pcWindow" class="window">
+        <div class="window-header">
+            <div class="window-title"><i class="fa-solid fa-desktop"></i> PC Durumu - [By: AwasBey]</div>
+            <div class="window-controls"><i class="fa-solid fa-xmark" onclick="closeWindow('pcWindow')"></i></div>
+        </div>
+        <div class="window-body">
+            <div class="status-card">
+                <span><i class="fa-solid fa-network-wired"></i> PC Köprü Bağlantısı:</span>
+                <strong id="pcStatus" style="color: #ef4444;">Kontrol Ediliyor...</strong>
+            </div>
+
+            <button class="btn" onclick="checkPCConnection()">PC Bağlantısını Sına</button>
+
+            <div id="drivesBox" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <div id="notesWindow" class="window">
+        <div class="window-header">
+            <div class="window-title"><i class="fa-solid fa-file-lines"></i> Not Defteri - By: AwasBey</div>
+            <div class="window-controls"><i class="fa-solid fa-xmark" onclick="closeWindow('notesWindow')"></i></div>
+        </div>
+        <div class="window-body">
+            <textarea style="width:100%; height:100%; background:transparent; color:white; border:none; outline:none; resize:none;" placeholder="AwasBey Not Paneli..."></textarea>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <button class="start-btn" onclick="openWindow('pcWindow')">
+            <i class="fa-brands fa-windows"></i> Başlat
+        </button>
+        <div class="taskbar-clock" id="clock">00:00</div>
+    </div>
+
+    <script>
+        function openWindow(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+        async function checkPCConnection() {
+            const statusEl = document.getElementById('pcStatus');
+            statusEl.innerText = "Bağlanıyor...";
+            statusEl.style.color = "#eab308";
+
+            try {
+                const res = await fetch('http://localhost:8080/ping');
+                const data = await res.json();
+                if (data.online) {
+                    statusEl.innerText = "Online (Bağlandı)";
+                    statusEl.style.color = "#22c55e";
+                    getDrives();
+                }
+            } catch (err) {
+                statusEl.innerText = "Offline (PC Servisi Kapalı)";
+                statusEl.style.color = "#ef4444";
+            }
+        }
+
+        async function getDrives() {
+            try {
+                const res = await fetch('http://localhost:8080/get-drives');
+                const drives = await res.json();
+                let html = '<p style="margin-bottom:8px; font-weight:bold;">Gerçek Sürücüler:</p>';
+                drives.forEach(d => {
+                    html += `<div class="status-card">
+                        <span><i class="fa-solid fa-hard-drive"></i> ${d.name}</span>
+                        <small>Boş: ${d.freeGB} GB / Toplam: ${d.totalGB} GB</small>
+                    </div>`;
+                });
+                document.getElementById('drivesBox').innerHTML = html;
+            } catch(e){}
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+        checkPCConnection();
+    </script>
+</body>
+</html>
