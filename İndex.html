@@ -1,176 +1,320 @@
+```html
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AwasBey Web-OS Remote</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efsane Futbolcu - Kariyer RPG</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        darkbg: '#0b0f17',
+                        cardbg: '#111827',
+                        borderbg: '#1f2937'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; font-family: 'Segoe UI', sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #0f172a; color: white; }
-
-        .desktop {
-            width: 100vw;
-            height: calc(100vh - 48px);
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-            position: relative;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-            gap: 15px;
-            align-content: start;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f17;
+            color: #f3f4f6;
+            user-select: none;
         }
-
-        .watermark {
-            position: absolute; bottom: 20px; right: 20px;
-            color: rgba(255, 255, 255, 0.15); font-size: 28px; font-weight: 900;
-            pointer-events: none;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .icon {
-            width: 85px; height: 90px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-radius: 10px; cursor: pointer; text-align: center;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #111827;
         }
-        .icon:active { background: rgba(255, 255, 255, 0.2); }
-        .icon i { font-size: 32px; margin-bottom: 6px; }
-        .icon span { font-size: 11px; font-weight: 600; }
-
-        .window {
-            position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
-            width: 92vw; max-width: 550px; height: 65vh;
-            background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px); display: none; flex-direction: column; z-index: 100;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 9999px;
         }
-
-        .window-header {
-            background: rgba(15, 23, 42, 0.9); padding: 10px 14px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .glow-green {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
         }
-
-        .window-body { flex: 1; padding: 16px; overflow-y: auto; }
-
-        .card {
-            background: rgba(255,255,255,0.05); padding: 12px;
-            border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .btn {
-            background: #38bdf8; color: #0f172a; border: none; padding: 10px 14px;
-            border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 6px;
-        }
-        .btn-danger { background: #ef4444; color: white; }
-
-        input {
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #475569;
-            background: #0f172a; color: white; margin-bottom: 8px; outline: none;
-        }
-
-        .taskbar {
-            width: 100vw; height: 48px; background: rgba(15, 23, 42, 0.95);
-            position: fixed; bottom: 0; left: 0; display: flex; align-items: center;
-            justify-content: space-between; padding: 0 12px; border-top: 1px solid rgba(255,255,255,0.1);
+        .glow-gold {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
         }
     </style>
 </head>
-<body>
+<body class="bg-darkbg text-gray-100 min-h-screen flex flex-col justify-between custom-scrollbar">
 
-    <div class="desktop">
-        <div class="watermark">By: AwasBey</div>
-
-        <div class="icon" onclick="openWindow('appLauncher')">
-            <i class="fa-solid fa-rocket" style="color: #38bdf8;"></i>
-            <span>Program Başlat</span>
-        </div>
-
-        <div class="icon" onclick="openWindow('sysControl')">
-            <i class="fa-solid fa-power-off" style="color: #ef4444;"></i>
-            <span>Sistem Kontrol</span>
-        </div>
-    </div>
-
-    <!-- PROGRAM BAŞLATICI PENCERESİ -->
-    <div id="appLauncher" class="window">
-        <div class="window-header">
-            <span style="color:#38bdf8; font-weight:bold;"><i class="fa-solid fa-rocket"></i> Gerçek PC Program Çalıştırıcı</span>
-            <i class="fa-solid fa-xmark" onclick="closeWindow('appLauncher')" style="cursor:pointer;"></i>
-        </div>
-        <div class="window-body">
-            <div class="card">
-                <p style="font-size:12px; margin-bottom:8px; color:#94a3b8;">Hızlı Çalıştır:</p>
-                <button class="btn" onclick="launchApp('chrome.exe')"><i class="fa-brands fa-chrome"></i> Google Chrome Aç</button>
-                <button class="btn" onclick="launchApp('notepad.exe')"><i class="fa-solid fa-file-lines"></i> Not Defteri Aç</button>
-                <button class="btn" onclick="launchApp('calc.exe')"><i class="fa-solid fa-calculator"></i> Hesap Makinesi Aç</button>
+    <!-- Top Navigation Header -->
+    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                    <i class="fa-solid font-soccer-ball fa-football"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-200">EFSANE FUTBOLCU</h1>
+                    <p class="text-xs text-gray-400" id="header-subtitle">Futbol Kariyeri RPG</p>
+                </div>
             </div>
 
-            <div class="card">
-                <p style="font-size:12px; margin-bottom:8px; color:#94a3b8;">Özel EXE veya Dosya Yolu Aç:</p>
-                <input type="text" id="customPath" placeholder="Örn: C:\\Windows\\explorer.exe veya dosya yolu">
-                <button class="btn" onclick="launchCustom()"><i class="fa-solid fa-play"></i> Bilgisayarda Çalıştır</button>
+            <!-- User Status Bar (When logged in) -->
+            <div id="user-header-status" class="hidden flex items-center space-x-4 text-sm">
+                <div class="bg-gray-800/80 px-3 py-1.5 rounded-lg border border-gray-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-coins text-yellow-400"></i>
+                    <span id="player-money" class="font-semibold text-yellow-400">₺0</span>
+                </div>
+                <div class="bg-gray-800/80 px-3 py-1.5 rounded-lg border border-gray-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-star text-emerald-400"></i>
+                    <span id="player-ovr" class="font-extrabold text-emerald-400">60 OVR</span>
+                </div>
+                <button onclick="logout()" class="text-gray-400 hover:text-red-400 transition p-2">
+                    <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                </button>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- SİSTEM KONTROL -->
-    <div id="sysControl" class="window">
-        <div class="window-header">
-            <span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-power-off"></i> Güç Menüsü</span>
-            <i class="fa-solid fa-xmark" onclick="closeWindow('sysControl')" style="cursor:pointer;"></i>
-        </div>
-        <div class="window-body">
-            <div class="card">
-                <p style="font-size:13px; margin-bottom:10px;">Durum: <strong id="pcStatus" style="color:#eab308;">Bağlanıyor...</strong></p>
-                <button class="btn btn-danger" onclick="sendCommand('shutdown')">Bilgisayarı Kapat</button>
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-grow">
+
+        <!-- AUTH SCREEN (Login / Signup) -->
+        <section id="screen-auth" class="max-w-md mx-auto my-12 bg-cardbg p-8 rounded-2xl border border-gray-800 shadow-2xl">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white mb-1">Kariyere Başla</h2>
+                <p class="text-sm text-gray-400">Giriş yap veya yeni bir futbolcu profili oluştur.</p>
             </div>
-        </div>
-    </div>
 
-    <div class="taskbar">
-        <button style="background:linear-gradient(135deg,#6366f1,#a855f7); color:white; border:none; padding:8px 14px; border-radius:8px; font-weight:bold;" onclick="openWindow('appLauncher')">
-            <i class="fa-brands fa-windows"></i> Başlat
-        </button>
-        <span id="clock" style="color:#cbd5e1; font-size:12px;">00:00</span>
-    </div>
+            <!-- Tab Buttons -->
+            <div class="flex border-b border-gray-800 mb-6">
+                <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2 font-medium text-brand-500 border-b-2 border-brand-500">Giriş Yap</button>
+                <button id="tab-signup-btn" onclick="switchAuthTab('signup')" class="flex-1 py-2 font-medium text-gray-400 border-b-2 border-transparent">Kayıt Ol</button>
+            </div>
 
-    <script>
-        const HOST = 'http://localhost:8080';
+            <!-- Login Form -->
+            <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Kullanıcı Adı</label>
+                    <input type="text" id="login-username" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Şifre</label>
+                    <input type="password" id="login-password" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg glow-green">Oyuna Giriş Yap</button>
+            </form>
 
-        function openWindow(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+            <!-- Signup Form -->
+            <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Kullanıcı Adı</label>
+                    <input type="text" id="signup-username" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Şifre</label>
+                    <input type="password" id="signup-password" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Hesap Oluştur</button>
+            </form>
+        </section>
 
-        async function launchApp(path) {
-            try {
-                const res = await fetch(`${HOST}/?cmd=launch&path=${encodeURIComponent(path)}`);
-                const data = await res.json();
-                alert(data.result || "Komut Gönderildi! [By: AwasBey]");
-            } catch(e) {
-                alert("Hata: PC Arka Plan Servisi Kapalı!");
-            }
-        }
+        <!-- CAREER CREATION SCREEN -->
+        <section id="screen-creation" class="hidden max-w-2xl mx-auto my-6 bg-cardbg p-8 rounded-2xl border border-gray-800 shadow-2xl">
+            <h2 class="text-2xl font-bold text-white mb-2 text-center">Futbolcu Kimliğini Oluştur</h2>
+            <p class="text-sm text-gray-400 text-center mb-6">Sahalardaki efsanevi yolculuğun burada başlıyor.</p>
 
-        function launchCustom() {
-            const val = document.getElementById('customPath').value;
-            if(val) launchApp(val);
-        }
+            <form onsubmit="handleCareerCreation(event)" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Ad Soyad</label>
+                        <input type="text" id="create-name" placeholder="Örn: Arda Güler" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Mevki</label>
+                        <select id="create-position" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                            <option value="ST">Santrafor (ST)</option>
+                            <option value="CAM">Oyun Kurucu (CAM)</option>
+                            <option value="CM">Merkez Orta Saha (CM)</option>
+                            <option value="RW">Sağ Kanat (RW)</option>
+                            <option value="LW">Sol Kanat (LW)</option>
+                            <option value="CB">Stoper (CB)</option>
+                        </select>
+                    </div>
+                </div>
 
-        async function checkConnection() {
-            try {
-                const res = await fetch(`${HOST}/?cmd=ping`);
-                const data = await res.json();
-                if(data.online) document.getElementById('pcStatus').innerText = "ONLINE (PC Bağlı)";
-            } catch(e) {
-                document.getElementById('pcStatus').innerText = "OFFLINE (C# Servisini Açın)";
-            }
-        }
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Forma Numarası</label>
+                        <input type="number" id="create-number" min="1" max="99" value="10" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Başlangıç Takımı</label>
+                        <select id="create-team" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500">
+                            <option value="Altınordu Akademi">Altınordu Akademi</option>
+                            <option value="Anadolu Gençlik">Anadolu Gençlik</option>
+                            <option value="İstanbul İdman Yurdu">İstanbul İdman Yurdu</option>
+                        </select>
+                    </div>
+                </div>
 
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-        }, 1000);
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 rounded-xl transition shadow-xl glow-green mt-4">
+                    <i class="fa-solid fa-play mr-2"></i>Kariyere Başla
+                </button>
+            </form>
+        </section>
 
-        checkConnection();
-    </script>
-</body>
-</html>
+        <!-- DASHBOARD HUB (MAIN GAME SCREEN) -->
+        <section id="screen-dashboard" class="hidden space-y-6">
+            
+            <!-- Navigation Tabs -->
+            <div class="flex space-x-2 border-b border-gray-800 pb-2 overflow-x-auto custom-scrollbar">
+                <button onclick="switchTab('home')" id="tab-btn-home" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-brand-600 text-white flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i> Ana Sayfa
+                </button>
+                <button onclick="switchTab('match')" id="tab-btn-match" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center gap-2">
+                    <i class="fa-solid fa-futbol"></i> Maç Yap
+                </button>
+                <button onclick="switchTab('skills')" id="tab-btn-skills" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i> Özel Yetenekler (172)
+                </button>
+                <button onclick="switchTab('training')" id="tab-btn-training" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center gap-2">
+                    <i class="fa-solid fa-dumbbell"></i> Antrenman
+                </button>
+                <button onclick="switchTab('transfers')" id="tab-btn-transfers" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center gap-2">
+                    <i class="fa-solid fa-handshake"></i> Transfer Pazarı
+                </button>
+                <button onclick="switchTab('settings')" id="tab-btn-settings" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-800 text-gray-300 hover:bg-gray-700 flex items-center gap-2">
+                    <i class="fa-solid fa-gear"></i> Ayarlar
+                </button>
+            </div>
+
+            <!-- DASHBOARD HOME TAB -->
+            <div id="tab-content-home" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Player Card -->
+                <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 flex flex-col justify-between shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-gray-800/20 text-9xl font-black italic pointer-events-none" id="card-bg-num">
+                        10
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="bg-brand-500/10 text-brand-400 text-xs font-bold px-2.5 py-1 rounded-md border border-brand-500/20" id="dash-pos">ST</span>
+                                <h3 class="text-2xl font-black text-white mt-1" id="dash-name">Oyuncu Adı</h3>
+                                <p class="text-xs text-gray-400" id="dash-team">Takım Adı</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-yellow-500 to-amber-600 text-gray-950 font-black text-3xl w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg" id="dash-ovr">
+                                60
+                            </div>
+                        </div>
+
+                        <!-- Core Stats Quick View -->
+                        <div class="grid grid-cols-2 gap-3 my-6">
+                            <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Hız & İvme</span>
+                                <span class="text-lg font-bold text-white" id="stat-speed">60</span>
+                            </div>
+                            <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Şut Gücü</span>
+                                <span class="text-lg font-bold text-white" id="stat-shooting">60</span>
+                            </div>
+                            <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Pas & Vizyon</span>
+                                <span class="text-lg font-bold text-white" id="stat-passing">60</span>
+                            </div>
+                            <div class="bg-gray-900/60 p-3 rounded-xl border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Top Kontrolü</span>
+                                <span class="text-lg font-bold text-white" id="stat-dribble">60</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs text-gray-400">
+                            <span>Enerji Seviyesi</span>
+                            <span id="dash-energy-txt">100%</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                            <div id="dash-energy-bar" class="bg-brand-500 h-full rounded-full w-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Stats Overview -->
+                <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 flex flex-col justify-between shadow-xl">
+                    <h4 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-yellow-500"></i> Kariyer İstatistikleri
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4 my-auto">
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 text-center">
+                            <p class="text-3xl font-black text-white" id="stat-matches">0</p>
+                            <p class="text-xs text-gray-400 font-medium">Toplam Maç</p>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 text-center">
+                            <p class="text-3xl font-black text-emerald-400" id="stat-goals">0</p>
+                            <p class="text-xs text-gray-400 font-medium">Goller</p>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 text-center">
+                            <p class="text-3xl font-black text-blue-400" id="stat-assists">0</p>
+                            <p class="text-xs text-gray-400 font-medium">Asistler</p>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 text-center">
+                            <p class="text-3xl font-black text-purple-400" id="stat-mvp">0</p>
+                            <p class="text-xs text-gray-400 font-medium">Maçın Adamı</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-500 text-center">
+                        Haftalık Maaş: <span id="dash-salary" class="text-gray-300 font-semibold">₺1,000</span>
+                    </div>
+                </div>
+
+                <!-- Quick Action Box -->
+                <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <h4 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-brand-400"></i> Sıradaki Mücadele
+                        </h4>
+                        <p class="text-sm text-gray-400 mb-6">Sonraki maça çıkarak takımını galibiyete taşı ve yetenek puanı kazan.</p>
+
+                        <div class="bg-gray-900/90 p-4 rounded-xl border border-gray-800 text-center mb-6">
+                            <span class="text-xs text-gray-500 uppercase tracking-widest block mb-1">Rakip Takım</span>
+                            <span id="next-match-opp" class="text-xl font-bold text-white">Anadolu Gençlik</span>
+                        </div>
+                    </div>
+
+                    <button onclick="switchTab('match')" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg glow-green flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Maç Merkezine Git
+                    </button>
+                </div>
+            </div>
+
+            <!-- MATCH SIMULATION TAB -->
+            <div id="tab-content-match" class="hidden space-y-6">
+                <div class="bg-cardbg rounded-2xl p-6 border border-gray-800 shadow-xl">
+                    <div class="flex flex-col md:flex-row justify-between items-center pb-6 border-b border-gray-800 gap-4">
+                        <div class="text-center md:text-left">
+                            <span id="match-my-team" class="text-2xl font-black text-white">Sizin Takım</span>
+                            <p class="text-xs text-brand-400 font-semibold">EV SAHİBİ</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-emerald-400 tracking-wider bg-gray-900 px-6 py-2 rounded-xl border border-gray-800" id="match-score">
+                                0 - 0
+                            </div>
+                            <span id="ma
